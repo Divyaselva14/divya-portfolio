@@ -1,3 +1,5 @@
+"use client";
+
 import { HackathonCard } from "@/components/hackathon-card";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
@@ -8,19 +10,107 @@ import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import { useEffect } from "react";
 
 const BLUR_FADE_DELAY = 0.04;
 
 export default function Page() {
+  useEffect(() => {
+    // Terminal animation - show text then animate
+    const terminalText = document.querySelector('.terminal-text');
+    const spans = terminalText?.querySelectorAll('span');
+    const mainPortfolio = document.getElementById('main-portfolio');
+    const terminalIntro = document.getElementById('terminal-intro');
+
+    if (spans && mainPortfolio && terminalIntro) {
+      // Prevent body scrolling during intro
+      document.body.style.overflow = 'hidden';
+
+      // Show all text immediately
+      spans.forEach(span => {
+        span.style.opacity = '1';
+      });
+
+      // Add blinking cursor to first line
+      const firstSpan = spans[0];
+      firstSpan.innerHTML += '<span class="cursor">|</span>';
+
+      // Animate cursor blink
+      let cursorVisible = true;
+      const blinkInterval = setInterval(() => {
+        const cursor = firstSpan.querySelector('.cursor');
+        if (cursor && cursor instanceof HTMLElement) {
+          cursor.style.opacity = cursorVisible ? '1' : '0';
+          cursorVisible = !cursorVisible;
+        }
+      }, 500);
+
+      // Add glow animation to text
+      spans.forEach((span, index) => {
+        span.style.animation = `textGlow 2s ease-in-out ${index * 0.3}s infinite alternate`;
+      });
+
+      // Fade out after delay
+      setTimeout(() => {
+        clearInterval(blinkInterval);
+        terminalIntro.style.opacity = '0';
+        setTimeout(() => {
+          terminalIntro.style.display = 'none';
+          mainPortfolio.style.opacity = '1';
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+        }, 1000);
+      }, 3000);
+    }
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      const progressBar = document.getElementById("progress-bar");
+      if (progressBar) {
+        progressBar.style.width = progress + "%";
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const glow = document.querySelector(".cursor-glow") as HTMLElement;
+      if (glow) {
+        glow.style.left = e.clientX + "px";
+        glow.style.top = e.clientY + "px";
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
-    <main className="flex flex-col min-h-[100dvh] space-y-10">
+    <>
+      <div id="terminal-intro">
+        <div className="terminal-text">
+          <span>SELECT * FROM divya_portfolio;</span>
+          <span>Querying portfolio data...</span>
+          <span>Loading components...</span>
+          <span>Initializing animations...</span>
+          <span>Portfolio ready.</span>
+        </div>
+      </div>
+      <main id="main-portfolio" className="flex flex-col min-h-[100dvh] space-y-10" style={{ opacity: 0, position: 'relative', zIndex: 1, transition: 'opacity 1s ease-in' }}>
+        <div id="progress-bar"></div>
+        <div className="cursor-glow"></div>
       <section id="hero">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 flex justify-between">
             <div className="flex-col flex flex-1 space-y-1.5">
               <BlurFadeText
                 delay={BLUR_FADE_DELAY}
-                className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
+                className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none gradient-text"
                 yOffset={8}
                 text={`Hi, I'm ${DATA.name.split(" ")[0]} 👋`}
               />
@@ -39,6 +129,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <div className="data-line"></div>
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -49,10 +140,11 @@ export default function Page() {
           </Markdown>
         </BlurFade>
       </section>
+      <div className="data-line"></div>
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <h2 className="text-xl font-bold">Work Experience</h2>
+            <h2 className="text-xl font-bold sticky-title">Work Experience</h2>
           </BlurFade>
           {DATA.work.map((work, id) => (
             <BlurFade
@@ -74,43 +166,29 @@ export default function Page() {
           ))}
         </div>
       </section>
-      <section id="education">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <h2 className="text-xl font-bold">Education</h2>
-          </BlurFade>
-          {DATA.education.map((education, id) => (
-            <BlurFade
-              key={education.school}
-              delay={BLUR_FADE_DELAY * 8 + id * 0.05}
-            >
-              <ResumeCard
-                key={education.school}
-                href={education.href}
-                logoUrl={education.logoUrl}
-                altText={education.school}
-                title={education.school}
-                subtitle={education.degree}
-                period={`${education.start} - ${education.end}`}
-              />
-            </BlurFade>
-          ))}
-        </div>
-      </section>
+      <div className="data-line"></div>
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
             <h2 className="text-xl font-bold">Skills</h2>
           </BlurFade>
-          <div className="flex flex-wrap gap-1">
-            {DATA.skills.map((skill, id) => (
-              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-                <Badge key={skill}>{skill}</Badge>
-              </BlurFade>
-            ))}
+          <div className="flex flex-wrap gap-4">
+            <div className="metric fade">
+              <span>10M+</span>
+              <p>rows processed</p>
+            </div>
+            <div className="metric fade">
+              <span>50+</span>
+              <p>pipelines built</p>
+            </div>
+            <div className="metric fade">
+              <span>99.9%</span>
+              <p>uptime achieved</p>
+            </div>
           </div>
         </div>
       </section>
+      <div className="data-line"></div>
       <section id="projects">
         <div className="space-y-12 w-full py-12">
           <BlurFade delay={BLUR_FADE_DELAY * 11}>
@@ -152,6 +230,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <div className="data-line"></div>
       <section id="hackathons">
         <div className="space-y-12 w-full py-12">
           <BlurFade delay={BLUR_FADE_DELAY * 13}>
@@ -195,6 +274,7 @@ export default function Page() {
           </BlurFade>
         </div>
       </section>
+      <div className="data-line"></div>
       <section id="contact">
         <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
           <BlurFade delay={BLUR_FADE_DELAY * 16}>
@@ -208,7 +288,7 @@ export default function Page() {
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Want to chat? Just shoot me a dm{" "}
                 <Link
-                  href={DATA.contact.social.X.url}
+                  href="https://x.com/divya_selv69345"
                   className="text-blue-500 hover:underline"
                 >
                   with a direct question on twitter
@@ -221,5 +301,6 @@ export default function Page() {
         </div>
       </section>
     </main>
+    </>
   );
 }

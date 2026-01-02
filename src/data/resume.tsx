@@ -47,22 +47,10 @@ export const DATA = {
 
         navbar: true,
       },
-      X: {
-        name: "X",
-        url: "https://dub.sh/dillion-twitter",
-        icon: Icons.x,
-
-        navbar: true,
-      },
-      Youtube: {
-        name: "Youtube",
-        url: "https://dub.sh/dillion-youtube",
-        icon: Icons.youtube,
-        navbar: true,
-      },
+    
       email: {
         name: "Send Email",
-        url: "#",
+        url: "divyaselva1498@gmail.com",
         icon: Icons.email,
 
         navbar: false,
@@ -72,11 +60,11 @@ export const DATA = {
 
   work: [
     {
-      company: "Atomic Finance",
+      company: "Uber",
       href: "https://atomic.finance",
       badges: [],
       location: "Remote",
-      title: "Bitcoin Protocol Engineer",
+      title: "Data Analytics Specialist III",
       logoUrl: "/atomic.png",
       start: "May 2021",
       end: "Oct 2022",
@@ -146,36 +134,20 @@ export const DATA = {
   ],
   education: [
     {
-      school: "Buildspace",
+      school: "University of Leeds, UK",
       href: "https://buildspace.so",
-      degree: "s3, s4, sf1, s5",
+      degree: "MSc Business Analytics and Decision Sciences",
       logoUrl: "/buildspace.jpg",
-      start: "2023",
-      end: "2024",
+      start: "2021",
+      end: "2022",
     },
     {
-      school: "University of Waterloo",
+      school: "Anna University, India",
       href: "https://uwaterloo.ca",
       degree: "Bachelor's Degree of Computer Science (BCS)",
       logoUrl: "/waterloo.png",
       start: "2016",
-      end: "2021",
-    },
-    {
-      school: "Wilfrid Laurier University",
-      href: "https://wlu.ca",
-      degree: "Bachelor's Degree of Business Administration (BBA)",
-      logoUrl: "/laurier.png",
-      start: "2016",
-      end: "2021",
-    },
-    {
-      school: "International Baccalaureate",
-      href: "https://ibo.org",
-      degree: "IB Diploma",
-      logoUrl: "/ib.png",
-      start: "2012",
-      end: "2016",
+      end: "2020",
     },
   ],
   projects: [
